@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <title>感覺統合樂園- 小小冒險家計分系統</title>
+    <meta
+      name="description"
+      content="專為小朋友設計的互動式闖關遊戲計分系統，記錄每一次挑戰的精彩時刻！"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <!-- 字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="page">
+      <div class="page-overlay"></div>
+
+      <div class="page-content">
+        <h1 class="title" data-testid="text-title">感覺統合樂園 🎡</h1>
+
+        <div class="card card-name">
+          <div class="card-inner">
+
+            <!-- ✅ 姓名輸入：同一行＋整行置中 -->
+            <div class="name-row">
+              <label for="name-input" class="label-name" data-testid="label-name">
+                請輸入你的姓名：
+              </label>
+              <input
+                id="name-input"
+                data-testid="input-name"
+                type="text"
+                placeholder="小朋友名字"
+                class="input-name"
+              />
+            </div>
+
+            <!-- ⭐ 小提醒不動，一樣在下一行 -->
+            <p class="name-tip">
+              小提醒：每玩完一個遊戲後，記得填上你得到的糖果數量喔！🍬✨
+            </p>
+
+          </div>
+        </div>
+
+        <!-- 關卡區 -->
+        <div class="games-grid">
+
+          <!-- 遊戲 1 -->
+          <div class="card game-card" data-testid="card-game-1">
+            <div class="card-inner game-inner">
+              <a href="https://clap-game.vercel.app" target="_blank" class="game-link">
+                <div class="game-emoji-box game1"></div>
+              </a>
+
+              <h2 class="game-title" data-testid="text-game-title-1">
+                <span>🥁</span>
+                <span>小丑打鼓台</span>
+              </h2>
+
+              <div class="game-input-group">
+                <label class="game-score-label" for="score-game1">
+                  <img src="photo/candy.jpg" class="candy-icon" />
+                  （0～3顆）
+                </label>
+                <input
+                  id="score-game1"
+                  data-testid="input-score-1"
+                  type="number"
+                  min="0"
+                  max="3"
+                  placeholder="0"
+                  class="input-score"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 遊戲 2 -->
+          <div class="card game-card" data-testid="card-game-2">
+            <div class="card-inner game-inner">
+              <a href="https://justin910920.github.io/basketball-web/">
+                <div class="game-emoji-box game2"></div>
+              </a>
+
+              <h2 class="game-title" data-testid="text-game-title-2">
+                <span>🏀</span>
+                <span>樂園神射手</span>
+              </h2>
+
+              <div class="game-input-group">
+                <label class="game-score-label" for="score-game2">
+                  <img src="photo/candy.jpg" class="candy-icon" />
+                  （0～3顆）
+                </label>
+                <input
+                  id="score-game2"
+                  data-testid="input-score-2"
+                  type="number"
+                  min="0"
+                  max="3"
+                  placeholder="0"
+                  class="input-score"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 遊戲 3 -->
+          <div class="card game-card" data-testid="card-game-3">
+            <div class="card-inner game-inner">
+              <a href="https://goldie062.github.io/firefly-game/" target="_blank" class="game-link">
+                <div class="game-emoji-box game3"></div>
+              </a>
+
+              <h2 class="game-title" data-testid="text-game-title-3">
+                <span>💡</span>
+                <span>螢火蟲冒險</span>
+              </h2>
+
+              <div class="game-input-group">
+                <label class="game-score-label" for="score-game3">
+                  <img src="photo/candy.jpg" class="candy-icon" />
+                  （0～3顆）
+                </label>
+                <input
+                  id="score-game3"
+                  data-testid="input-score-3"
+                  type="number"
+                  min="0"
+                  max="3"
+                  placeholder="0"
+                  class="input-score"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 遊戲 4 -->
+          <div class="card game-card" data-testid="card-game-4">
+            <div class="card-inner game-inner">
+              <a href="https://hjuuuu11.github.io/clown-dodgeball-game" target="_blank" class="game-link">
+                <div class="game-emoji-box game4"></div>
+              </a>
+
+              <h2 class="game-title" data-testid="text-game-title-4">
+                <span>🏐</span>
+                <span>小丑躲避球</span>
+              </h2>
+
+              <div class="game-input-group">
+                <label class="game-score-label" for="score-game4">
+                  <img src="photo/candy.jpg" class="candy-icon" />
+                  （0～3顆）
+                </label>
+                <input
+                  id="score-game4"
+                  data-testid="input-score-4"
+                  type="number"
+                  min="0"
+                  max="3"
+                  placeholder="0"
+                  class="input-score"
+                />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 成績卡 -->
+        <div class="card score-card">
+          <div class="score-header">
+            <h2 class="score-title" data-testid="text-score-card-title">
+              <span>🏆</span>
+              <span>小小闖關成績單</span>
+              <span>🏆</span>
+            </h2>
+          </div>
+
+          <div class="score-body">
+            <p class="score-name" data-testid="text-player-name">
+              <span class="score-name-label">姓名：</span>
+              <span class="score-name-value" id="display-name">—</span>
+            </p>
+
+            <div class="score-list">
+              <p class="score-item">
+                <span class="score-emoji">🥁</span>
+                小丑打鼓台：
+                <span class="score-game-value" id="display-game1-score">0</span>
+              </p>
+
+              <p class="score-item">
+                <span class="score-emoji">🏀</span>
+                樂園神射手：
+                <span class="score-game-value" id="display-game2-score">0</span>
+              </p>
+
+              <p class="score-item">
+                <span class="score-emoji">💡</span>
+                螢火蟲冒險：
+                <span class="score-game-value" id="display-game3-score">0</span>
+              </p>
+
+              <p class="score-item">
+                <span class="score-emoji">🏐</span>
+                小丑躲避球：
+                <span class="score-game-value" id="display-game4-score">0</span>
+              </p>
+
+              <div class="score-total-row">
+                <p class="score-total">
+                  <span>✨ 總糖果：</span>
+                </p>
+
+                <!-- 糖果兩排顯示的容器 -->
+                <div class="total-candy-box" id="display-total-score"></div>
+
+                <!-- 總顆數文字 -->
+                <p class="score-total">
+                  <span id="display-total-count">0 顆</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="score-buttons">
+            <button id="btn-reset" class="btn btn-reset">🔄 重新挑戰</button>
+            <button id="btn-finish" class="btn btn-finish">🎊 結束闖關</button>
+          </div>
+        </div>
+
+        <div class="footer-text">
+          祝你玩得開心！繼續加油！💪
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
