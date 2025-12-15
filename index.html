@@ -239,12 +239,33 @@
           </div>
         </div>
 
+        <!-- ✅ 結果分析按鈕 -->
+        <div class="result-area">
+          <button id="btn-result" class="btn btn-result">📊 結果分析</button>
+        </div>
+
+        <!-- ✅ 結果圖表彈窗 -->
+        <div id="result-modal" class="modal hidden">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>今日感覺統合分數</h2>
+              <button id="btn-close-modal" class="btn-close">✕</button>
+            </div>
+
+            <canvas id="senseChart" height="140"></canvas>
+
+            <div id="senseScoresText" class="scores-text"></div>
+          </div>
+        </div>
+
         <div class="footer-text">
           祝你玩得開心！繼續加油！💪
         </div>
       </div>
     </div>
 
+    <!-- ✅ 先載 Chart.js，再載你的 script.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
