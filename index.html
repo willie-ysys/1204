@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
+
     <!-- 字體 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,7 +29,6 @@
 
         <div class="card card-name">
           <div class="card-inner">
-
             <!-- ✅ 姓名輸入：同一行＋整行置中 -->
             <div class="name-row">
               <label for="name-input" class="label-name" data-testid="label-name">
@@ -47,17 +47,20 @@
             <p class="name-tip">
               小提醒：每玩完一個遊戲後，記得填上你得到的糖果數量喔！🍬✨
             </p>
-
           </div>
         </div>
 
         <!-- 關卡區 -->
         <div class="games-grid">
-
           <!-- 遊戲 1 -->
           <div class="card game-card" data-testid="card-game-1">
             <div class="card-inner game-inner">
-              <a href="https://clap-game.vercel.app" target="_blank" class="game-link">
+              <a
+                href="https://clap-game.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="game-link"
+              >
                 <div class="game-emoji-box game1"></div>
               </a>
 
@@ -87,7 +90,12 @@
           <!-- 遊戲 2 -->
           <div class="card game-card" data-testid="card-game-2">
             <div class="card-inner game-inner">
-              <a href="https://justin910920.github.io/basketball-web/">
+              <a
+                href="https://justin910920.github.io/basketball-web/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="game-link"
+              >
                 <div class="game-emoji-box game2"></div>
               </a>
 
@@ -117,7 +125,12 @@
           <!-- 遊戲 3 -->
           <div class="card game-card" data-testid="card-game-3">
             <div class="card-inner game-inner">
-              <a href="https://goldie062.github.io/firefly-game/" target="_blank" class="game-link">
+              <a
+                href="https://goldie062.github.io/firefly-game/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="game-link"
+              >
                 <div class="game-emoji-box game3"></div>
               </a>
 
@@ -147,7 +160,12 @@
           <!-- 遊戲 4 -->
           <div class="card game-card" data-testid="card-game-4">
             <div class="card-inner game-inner">
-              <a href="https://hjuuuu11.github.io/clown-dodgeball-game" target="_blank" class="game-link">
+              <a
+                href="https://hjuuuu11.github.io/clown-dodgeball-game"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="game-link"
+              >
                 <div class="game-emoji-box game4"></div>
               </a>
 
@@ -173,7 +191,6 @@
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- 成績卡 -->
@@ -252,8 +269,7 @@
               <button id="btn-close-modal" class="btn-close">✕</button>
             </div>
 
-            <canvas id="senseChart" height="140"></canvas>
-
+            <canvas id="senseChart" height="160"></canvas>
             <div id="senseScoresText" class="scores-text"></div>
           </div>
         </div>
