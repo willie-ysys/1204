@@ -291,10 +291,10 @@ body {
   background-repeat: no-repeat !important;
 }
 
-.game1 { background-image: url("photo/game1.jpg"); }
-.game2 { background-image: url("photo/game2.jpg"); }
-.game3 { background-image: url("photo/game3.jpg"); }
-.game4 { background-image: url("photo/game4.jpg"); }
+.game1 { background-image: url("photo/game_one.jpg"); }
+.game2 { background-image: url("photo/game_two.jpg"); }
+.game3 { background-image: url("photo/game_three.jpg"); }
+.game4 { background-image: url("photo/game_four.jpg"); }
 
 .game-link {
   display: block;
