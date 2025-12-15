@@ -170,9 +170,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const textEl = document.getElementById("senseScoresText");
     if (textEl) {
       textEl.innerHTML = SENSES.map(
-        (s) => `${s}：${senseScore[s]} 分（${senseCandy[s]} / ${senseMaxCandy[s]} 顆糖果）`
+        (s) => `${s}：${senseScore[s]} 分`
       ).join("<br/>");
     }
+
 
     const canvas = document.getElementById("senseChart");
     if (!canvas) return;
