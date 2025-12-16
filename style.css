@@ -47,12 +47,16 @@ body {
 /* 標題 */
 .title {
   font-family: "Fredoka", "Noto Sans TC", system-ui, sans-serif;
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 700;
+  font-size: clamp(2.6rem, 5vw, 3.6rem);
+  font-weight: 800;
   color: #e26ea2;
   text-align: center;
-  text-shadow: 0 4px 12px rgba(226, 110, 162, 0.3);
-  margin: 8px 0 24px;
+  margin: 12px 0 28px;
+
+  /* ⭐ 重點在這裡：雙層陰影 */
+  text-shadow:
+    0 2px 6px rgba(255, 255, 255, 0.9),   /* 白色柔光，讓字從背景浮出來 */
+    0 6px 16px rgba(226, 110, 162, 0.45); /* 粉色陰影，維持整體風格 */
 }
 
 /* 卡片通用 */
