@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const displayTotalCount = document.getElementById("display-total-count");
 
   const btnReset = document.getElementById("btn-reset");
-  const btnFinish = document.getElementById("btn-finish");
 
   // ✅ 結果分析（圖表）相關 DOM
   const btnResult = document.getElementById("btn-result");
@@ -103,12 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scoreInputs.game4.value = "";
 
     updateScoreCard();
-  });
-
-  btnFinish.addEventListener("click", () => {
-    const name = nameInput.value.trim() || "小朋友";
-    const total = scores.game1 + scores.game2 + scores.game3 + scores.game4;
-    alert(name + " 的總糖果是 " + total + " 顆！🍬🎉");
   });
 
   // ==========================================================
