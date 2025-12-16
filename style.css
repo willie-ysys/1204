@@ -1,4 +1,6 @@
-/* 全域設定 */
+/* =========================
+   全域設定
+========================= */
 *,
 *::before,
 *::after {
@@ -12,7 +14,9 @@ body {
   color: #4a4a4a;
 }
 
-/* 背景 */
+/* =========================
+   背景
+========================= */
 .page {
   min-height: 100vh;
   position: relative;
@@ -44,7 +48,9 @@ body {
   align-items: center;
 }
 
-/* 標題 */
+/* =========================
+   標題
+========================= */
 .title {
   font-family: "Fredoka", "Noto Sans TC", system-ui, sans-serif;
   font-size: clamp(2.6rem, 5vw, 3.6rem);
@@ -53,13 +59,15 @@ body {
   text-align: center;
   margin: 12px 0 28px;
 
-  /* ⭐ 重點在這裡：雙層陰影 */
+  /* ⭐ 雙層陰影：白色浮出 + 粉色維持風格 */
   text-shadow:
-    0 2px 6px rgba(255, 255, 255, 0.9),   /* 白色柔光，讓字從背景浮出來 */
-    0 6px 16px rgba(226, 110, 162, 0.45); /* 粉色陰影，維持整體風格 */
+    0 2px 6px rgba(255, 255, 255, 0.9),
+    0 6px 16px rgba(226, 110, 162, 0.45);
 }
 
-/* 卡片通用 */
+/* =========================
+   卡片通用
+========================= */
 .card {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 18px;
@@ -76,18 +84,28 @@ body {
 
 .card-inner { padding: 18px 22px; }
 
-/* 姓名卡 */
+/* =========================
+   姓名卡
+========================= */
 .card-name {
   margin-bottom: 24px;
   width: 100%;
   max-width: 720px;
 }
 
+.name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+}
+
 .label-name {
   font-size: 1.1rem;
   font-weight: 600;
   color: #d74e8a;
-  margin-right: 12px;
+  margin: 0;
 }
 
 .input-name {
@@ -99,7 +117,7 @@ body {
   border: 2px solid #f7c6d8;
   outline: none;
   width: 100%;
-  max-width: 360px;
+  max-width: 260px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -108,7 +126,20 @@ body {
   box-shadow: 0 0 0 2px rgba(226, 110, 162, 0.25);
 }
 
-/* 關卡區 */
+.name-tip {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 182, 193, 0.25);
+  border: 2px solid rgba(255, 182, 193, 0.45);
+  font-size: 0.9rem;
+  color: #c23d7c;
+  text-align: center;
+}
+
+/* =========================
+   關卡區
+========================= */
 .games-grid {
   width: 100%;
   max-width: 880px;
@@ -142,7 +173,24 @@ body {
   align-items: center;
   justify-content: center;
   box-shadow: inset 0 0 15px rgba(255, 192, 203, 0.35);
+
+  overflow: hidden;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
 }
+
+.game1 { background-image: url("photo/game_one.jpg"); }
+.game2 { background-image: url("photo/game_two.jpg"); }
+.game3 { background-image: url("photo/game_three.jpg"); }
+.game4 { background-image: url("photo/game_four.jpg"); }
+
+.game-link {
+  display: block;
+  width: 160px;
+  height: 160px;
+}
+.game-link:hover { cursor: pointer; }
 
 /* 遊戲標題 */
 .game-title {
@@ -177,7 +225,36 @@ body {
   box-shadow: 0 0 0 2px rgba(226, 110, 162, 0.25);
 }
 
-/* 成績卡 */
+/* =========================
+   糖果顯示樣式（整理版，不重複）
+========================= */
+.candy-icon {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+}
+
+/* label 的糖果 icon 右邊留距離 */
+.game-score-label .candy-icon {
+  margin-right: 4px;
+}
+
+/* 成績單內 icon 與總糖果 icon 的間距 */
+.score-game-value .candy-icon,
+#display-total-score .candy-icon {
+  margin: 0 2px;
+}
+
+.candy-count-text {
+  margin-left: 6px;
+  font-weight: 700;
+  color: #e26ea2;
+  vertical-align: middle;
+}
+
+/* =========================
+   成績卡
+========================= */
 .score-card {
   width: 100%;
   max-width: 480px;
@@ -187,7 +264,6 @@ body {
   margin-bottom: 24px;
 }
 
-/* 成績卡標題 */
 .score-header {
   padding: 12px 22px 0;
   text-align: center;
@@ -204,17 +280,14 @@ body {
   gap: 6px;
 }
 
-/* 成績內容 → 全部置中 */
 .score-body {
   padding: 10px 22px 18px;
   text-align: center;
 }
 
-/* 姓名 */
 .score-name-label { color: #c26d93; }
 .score-name-value { color: #e26ea2; }
 
-/* 各關卡糖果 */
 .score-game-value {
   color: #e26ea2;
   font-weight: 700;
@@ -237,7 +310,7 @@ body {
   padding-top: 10px;
 }
 
-/* ⭐ 總分 → 完全置中 */
+/* 總分置中 */
 .score-total {
   margin: 0;
   display: flex;
@@ -248,7 +321,29 @@ body {
   color: #c23d7c;
 }
 
-/* 按鈕 */
+/* 總糖果：6 顆一排，超過自動換行 */
+.total-candy-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: calc(26px * 6 + 6px * 5);
+  margin: 6px auto 0;
+}
+
+.total-candy-box .candy-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.total-candy-box .candy-count-text {
+  width: 100%;
+  text-align: center;
+}
+
+/* =========================
+   按鈕
+========================= */
 .score-buttons {
   padding: 0 22px 18px;
   display: flex;
@@ -279,7 +374,9 @@ body {
 .btn-reset { background-color: #f28bbd; color: white; }
 .btn-finish { background-color: #f5a6cc; color: white; }
 
-/* footer */
+/* =========================
+   footer
+========================= */
 .footer-text {
   margin-top: 14px;
   font-size: 0.9rem;
@@ -289,112 +386,9 @@ body {
   border-radius: 999px;
 }
 
-/* 圖片背景 */
-.game-emoji-box {
-  overflow: hidden;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
-
-.game1 { background-image: url("photo/game_one.jpg"); }
-.game2 { background-image: url("photo/game_two.jpg"); }
-.game3 { background-image: url("photo/game_three.jpg"); }
-.game4 { background-image: url("photo/game_four.jpg"); }
-
-.game-link {
-  display: block;
-  width: 160px;
-  height: 160px;
-}
-.game-link:hover { cursor: pointer; }
-
-/* ====== 糖果顯示樣式（原樣保留） ====== */
-
-.candy-icon {
-  width: 22px;
-  height: 22px;
-  vertical-align: middle;
-  margin: 0 2px;
-}
-
-.candy-count-text {
-  margin-left: 6px;
-  font-weight: 700;
-  color: #e26ea2;
-  vertical-align: middle;
-}
-
-/* 🔸 糖果 icon（用在關卡輸入框的 label） */
-.candy-icon {
-  width: 22px;
-  height: 22px;
-  vertical-align: middle;
-  margin-right: 4px;
-}
-
-/* ✅✅ 只修這裡：總糖果「6 顆一排」，第 7 顆開始自動第二排 */
-.total-candy-box {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  max-width: calc(26px * 6 + 6px * 5); /* 一排最多 6 顆 */
-  margin: 6px auto 0;
-}
-
-.total-candy-box .candy-icon {
-  width: 26px;
-  height: 26px;
-}
-
-/* 0 顆時的文字也置中 */
-.total-candy-box .candy-count-text {
-  width: 100%;
-  text-align: center;
-}
-
-.name-tip {
-  margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(255, 182, 193, 0.25);
-  border: 2px solid rgba(255, 182, 193, 0.45);
-  font-size: 0.9rem;
-  color: #c23d7c;
-  text-align: center;
-}
-/* 🔸 讓「請輸入你的姓名：＋輸入框」在同一行並整列置中 */
-.name-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;  /* 整行置中 */
-  width: 100%;
-  gap: 10px; /* label 與 input 的距離 */
-}
-
-/* 🔸 讓 label 不要貼太左邊 */
-.label-name {
-  margin: 0;
-}
-
-/* 🔸 輸入框固定大小（避免跑版） */
-.input-name {
-  max-width: 260px;
-}
-/* ===== 結果分析（modal + chart）===== */
-.result-area{
-  display:flex;
-  justify-content:center;
-  margin: 18px 0 0;
-}
-
-.btn-result{
-  padding: 12px 18px;
-  border-radius: 14px;
-  font-weight: 700;
-}
-
+/* =========================
+   結果分析（modal + chart）
+========================= */
 .hidden{ display:none !important; }
 
 .modal{
@@ -439,10 +433,17 @@ body {
   font-size: 16px;
 }
 
+/* ✅ 固定圖表區高度（不會因分數低而被壓扁） */
+.chart-wrap{
+  width: 100%;
+  height: 260px;   /* ⭐ 想更大可改 300px */
+}
+
+/* ✅ Canvas 撐滿 chart-wrap + 保留美觀背景 */
 #senseChart{
   width: 100% !important;
-  max-width: 100%;
-  display:block;
+  height: 100% !important;
+  display: block;
   background: rgba(255,255,255,0.6);
   border-radius: 14px;
   padding: 10px;
@@ -454,13 +455,43 @@ body {
   line-height: 1.8;
   color: #444;
 }
-/* ===== 固定成果分析圖表高度（避免分數低時被壓扁） ===== */
-.chart-wrap {
-  height: 260px;          /* ⭐ 這就是整個區塊固定高度 */
-  width: 100%;
+
+/* 上方總結句 */
+.sense-summary{
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 240, 245, 0.85);
+  border: 2px solid rgba(243, 168, 197, 0.6);
+  line-height: 1.7;
+  font-size: 15px;
+  color: #444;
 }
 
-#senseChart {
-  width: 100% !important;
-  height: 100% !important;
+.kid-name{
+  font-weight: 900;
+  color: #e26ea2;
+}
+
+.best-sense{
+  font-weight: 900;
+  color: #c23d7c;
+  text-shadow: 0 2px 10px rgba(226, 110, 162, 0.2);
+}
+
+.best-desc{
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 700;
+  color: #7a2f55;
+}
+
+.sense-list{
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid rgba(226, 110, 162, 0.25);
+  line-height: 1.8;
+  font-size: 15px;
 }
