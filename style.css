@@ -454,3 +454,13 @@ body {
   line-height: 1.8;
   color: #444;
 }
+/* ===== 固定成果分析圖表高度（避免分數低時被壓扁） ===== */
+.chart-wrap {
+  height: 260px;          /* ⭐ 這就是整個區塊固定高度 */
+  width: 100%;
+}
+
+#senseChart {
+  width: 100% !important;
+  height: 100% !important;
+}

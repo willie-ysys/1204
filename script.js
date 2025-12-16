@@ -194,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false, // ⭐⭐⭐ 關鍵
         scales: {
           y: { beginAtZero: true, max: 100 },
         },
