@@ -21,15 +21,17 @@ body {
   align-items: stretch;
   justify-content: center;
 
-  background-image: url("photo/S__38928396.jpg");
+  /* ⭐ 新背景 */
+  background-image: url("photo/background.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
   background-color: #fff;
 
-  /* ⭐ 背景固定，不會跟著滑動 */
+  /* 背景固定（有視差感） */
   background-attachment: fixed;
 }
+
 .page-overlay { display: none; }
 
 .page-content {
