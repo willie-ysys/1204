@@ -109,12 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================================
   const SENSES = ["視覺", "聽覺", "前庭覺", "本體覺"];
 
-  // 四個遊戲對應到的覺（你前面統整版）
+  // 四個遊戲對應到的覺
   const GAME_SENSES = {
-    game1: ["視覺", "聽覺", "本體覺"],      // 小丑打鼓台
-    game2: ["視覺", "前庭覺", "本體覺"],    // 樂園神射手
-    game3: ["視覺", "前庭覺"],              // 螢火蟲冒險
-    game4: ["視覺", "前庭覺", "本體覺"],    // 小丑躲避球
+    game1: ["視覺", "聽覺", "本體覺"],   // 小丑打鼓台
+    game2: ["視覺", "前庭覺", "本體覺"], // 樂園神射手
+    game3: ["視覺", "前庭覺"],           // 螢火蟲冒險
+    game4: ["視覺", "前庭覺", "本體覺"], // 小丑躲避球
   };
 
   function computeSenseScores() {
@@ -157,24 +157,56 @@ document.addEventListener("DOMContentLoaded", () => {
   let senseChart = null;
 
   function renderSenseChart() {
-    const { senseCandy, senseMaxCandy, senseScore } = computeSenseScores();
+    const { senseScore } = computeSenseScores();
 
-    // 文字區塊（讓老師看得懂計分）
-    const textEl = document.getElementById("senseScoresText");
-    if (textEl) {
-      textEl.innerHTML = SENSES.map(
-        (s) => `${s}：${senseScore[s]} 分`
-      ).join("<br/>");
+    // ✅ 文字區塊：抓姓名＋找今天最強的覺＋活潑一句話（不顯示幾顆糖果）
+    const kidName = (nameInput?.value || "").trim() || "小朋友";
+
+    const maxScore = Math.max(...SENSES.map((s) => senseScore[s]));
+    const bestSenses = SENSES.filter((s) => senseScore[s] === maxScore);
+    const bestLabel = bestSenses.join("、");
+
+    const SENSE_DESC = {
+      視覺: "你的眼睛超會抓重點，觀察力一級棒！👀✨",
+      聽覺: "你很會聽節奏跟指令，耳朵超靈敏！👂🎵",
+      前庭覺: "你的平衡感很厲害，轉一轉也不怕暈！🌀🤸",
+      本體覺: "你超會控制身體，動作協調又穩！💪🧠",
+    };
+
+    let summaryLine = "";
+    let bestDesc = "";
+
+    if (maxScore === 0) {
+      summaryLine = `🌈 今天 <span class="kid-name">${kidName}</span> 還沒開始計分～快去挑戰遊戲拿糖果吧！🍬✨<br/>`;
+      bestDesc = "小提醒：填完每關糖果數，成果分析就會出現你的厲害能力喔！💖";
+    } else if (bestSenses.length === 1) {
+      summaryLine = `🎉 今天 <span class="kid-name">${kidName}</span> 表現最好的是 <span class="best-sense">${bestLabel}</span>（${maxScore} 分）！<br/>`;
+      bestDesc = SENSE_DESC[bestSenses[0]] || "太棒了！你今天表現超亮眼！🌟";
+    } else {
+      summaryLine = `🎉 今天 <span class="kid-name">${kidName}</span> 最強的是 <span class="best-sense">${bestLabel}</span>（都 ${maxScore} 分）！<br/>`;
+      bestDesc = "你不只一項能力並列最強，根本是全能小高手！🌟";
     }
 
+    const textEl = document.getElementById("senseScoresText");
+    if (textEl) {
+      textEl.innerHTML = `
+        <div class="sense-summary">
+          ${summaryLine}
+          <span class="best-desc">${bestDesc}</span>
+        </div>
+        <div class="sense-list">
+          ${SENSES.map((s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`).join("")}
+        </div>
+      `;
+    }
 
+    // ✅ 圖表
     const canvas = document.getElementById("senseChart");
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (senseChart) senseChart.destroy();
 
-    // Chart.js 必須已載入（index.html 先載 chart.js 再載 script.js）
     if (typeof Chart === "undefined") {
       console.error("Chart.js 未載入：請確認 index.html 有先引入 chart.umd.min.js");
       return;
@@ -194,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false, // ⭐⭐⭐ 關鍵
+        maintainAspectRatio: false, // ✅ 讓 chart 不會被壓扁（搭配 CSS / chart-wrap）
         scales: {
           y: { beginAtZero: true, max: 100 },
         },
@@ -213,10 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   }
 
-  // 點「📊 結果分析」
   if (btnResult) btnResult.addEventListener("click", openModal);
-
-  // 點 ✕ 關閉
   if (btnCloseModal) btnCloseModal.addEventListener("click", closeModal);
 
   // 點黑色背景也關閉
