@@ -20,20 +20,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const displayTotalCount = document.getElementById("display-total-count");
 
   const btnReset = document.getElementById("btn-reset");
-
-  // ✅ 結果分析（圖表）相關 DOM
   const btnResult = document.getElementById("btn-result");
   const modal = document.getElementById("result-modal");
   const btnCloseModal = document.getElementById("btn-close-modal");
 
-  const scores = {
-    game1: 0,
-    game2: 0,
-    game3: 0,
-    game4: 0,
-  };
+  const scores = { game1: 0, game2: 0, game3: 0, game4: 0 };
 
-  // 產生糖果圖示（0~3顆）
+  /* ================= 糖果顯示 ================= */
+
   function renderCandies(n) {
     if (n <= 0) return `<span class="candy-count-text">0 顆</span>`;
     let html = "";
@@ -65,152 +59,171 @@ document.addEventListener("DOMContentLoaded", () => {
       displayTotalBox.innerHTML = imgs;
     }
 
-    if (displayTotalCount) {
-      displayTotalCount.textContent = total + " 顆";
-    }
+    displayTotalCount.textContent = `${total} 顆`;
   }
 
   function setScore(gameKey, value) {
-    const num = parseInt(value, 10);
-
-    let fixed = isNaN(num) ? 0 : num;
-    if (fixed < 0) fixed = 0;
+    let fixed = parseInt(value, 10);
+    if (isNaN(fixed) || fixed < 0) fixed = 0;
     if (fixed > 3) fixed = 3;
-
     scores[gameKey] = fixed;
     scoreInputs[gameKey].value = fixed === 0 ? "" : fixed;
-
     updateScoreCard();
   }
 
   nameInput.addEventListener("input", updateScoreCard);
-
-  scoreInputs.game1.addEventListener("input", (e) => setScore("game1", e.target.value));
-  scoreInputs.game2.addEventListener("input", (e) => setScore("game2", e.target.value));
-  scoreInputs.game3.addEventListener("input", (e) => setScore("game3", e.target.value));
-  scoreInputs.game4.addEventListener("input", (e) => setScore("game4", e.target.value));
+  Object.keys(scoreInputs).forEach((k) => {
+    scoreInputs[k].addEventListener("input", (e) => setScore(k, e.target.value));
+  });
 
   btnReset.addEventListener("click", () => {
-    scores.game1 = 0;
-    scores.game2 = 0;
-    scores.game3 = 0;
-    scores.game4 = 0;
-
-    scoreInputs.game1.value = "";
-    scoreInputs.game2.value = "";
-    scoreInputs.game3.value = "";
-    scoreInputs.game4.value = "";
-
+    Object.keys(scores).forEach((k) => {
+      scores[k] = 0;
+      scoreInputs[k].value = "";
+    });
     updateScoreCard();
   });
 
-  // ==========================================================
-  // ✅ 結果分析：四覺分數（依糖果換算 0–100）+ Chart.js
-  // ==========================================================
+  /* ================= 感覺統合分析 ================= */
+
   const SENSES = ["視覺", "聽覺", "前庭覺", "本體覺"];
 
-  // 四個遊戲對應到的覺
   const GAME_SENSES = {
-    game1: ["視覺", "聽覺", "本體覺"],   // 小丑打鼓台
-    game2: ["視覺", "前庭覺", "本體覺"], // 樂園神射手
-    game3: ["視覺", "前庭覺"],           // 螢火蟲冒險
-    game4: ["視覺", "前庭覺", "本體覺"], // 小丑躲避球
+    game1: ["視覺", "聽覺", "本體覺"],
+    game2: ["視覺", "前庭覺", "本體覺"],
+    game3: ["視覺", "前庭覺"],
+    game4: ["視覺", "前庭覺", "本體覺"],
   };
 
   function computeSenseScores() {
     const senseCandy = {};
-    const senseMaxCandy = {};
+    const senseMax = {};
     const senseScore = {};
 
     SENSES.forEach((s) => {
       senseCandy[s] = 0;
-      senseMaxCandy[s] = 0;
-      senseScore[s] = 0;
+      senseMax[s] =
+        Object.keys(GAME_SENSES).filter((g) =>
+          GAME_SENSES[g].includes(s)
+        ).length * 3;
     });
 
-    // maxCandy = (有訓練到該覺的遊戲數) * 3
-    for (const sense of SENSES) {
-      const gamesCount = Object.keys(GAME_SENSES).filter((g) =>
-        GAME_SENSES[g].includes(sense)
-      ).length;
-      senseMaxCandy[sense] = gamesCount * 3;
-    }
+    Object.keys(GAME_SENSES).forEach((g) => {
+      GAME_SENSES[g].forEach((s) => {
+        senseCandy[s] += scores[g];
+      });
+    });
 
-    // 分配糖果到各覺（每個遊戲的糖果會加到它對應的所有覺）
-    for (const gameKey of Object.keys(GAME_SENSES)) {
-      const candy = scores[gameKey] || 0; // 0~3
-      for (const sense of GAME_SENSES[gameKey]) {
-        senseCandy[sense] += candy;
-      }
-    }
+    SENSES.forEach((s) => {
+      senseScore[s] = senseMax[s]
+        ? Math.round((senseCandy[s] / senseMax[s]) * 100)
+        : 0;
+    });
 
-    // 換算成 0~100 分
-    for (const sense of SENSES) {
-      const maxC = senseMaxCandy[sense] || 1;
-      const score = (senseCandy[sense] / maxC) * 100;
-      senseScore[sense] = Math.round(score);
-    }
-
-    return { senseCandy, senseMaxCandy, senseScore };
+    return senseScore;
   }
 
   let senseChart = null;
 
   function renderSenseChart() {
-    const { senseScore } = computeSenseScores();
-
-    // ✅ 文字區塊：抓姓名＋找今天最強的覺＋活潑一句話（不顯示幾顆糖果）
-    const kidName = (nameInput?.value || "").trim() || "小朋友";
+    const senseScore = computeSenseScores();
+    const kidName = nameInput.value.trim() || "小朋友";
 
     const maxScore = Math.max(...SENSES.map((s) => senseScore[s]));
-    const bestSenses = SENSES.filter((s) => senseScore[s] === maxScore);
-    const bestLabel = bestSenses.join("、");
+    const minScore = Math.min(...SENSES.map((s) => senseScore[s]));
 
-    const SENSE_DESC = {
+    const best = SENSES.filter((s) => senseScore[s] === maxScore);
+    const weak = SENSES.filter((s) => senseScore[s] === minScore);
+
+    const BEST_DESC = {
       視覺: "你的眼睛超會抓重點，觀察力一級棒！👀✨",
       聽覺: "你很會聽節奏跟指令，耳朵超靈敏！👂🎵",
       前庭覺: "你的平衡感很厲害，轉一轉也不怕暈！🌀🤸",
-      本體覺: "你超會控制身體，動作協調又穩！💪🧠",
+      本體覺: "你很會控制身體，動作協調又穩！💪🧠",
     };
 
-    let summaryLine = "";
-    let bestDesc = "";
-
-    if (maxScore === 0) {
-      summaryLine = `🌈 今天 <span class="kid-name">${kidName}</span> 還沒開始計分～快去挑戰遊戲拿糖果吧！🍬✨<br/>`;
-      bestDesc = "小提醒：填完每關糖果數，成果分析就會出現你的厲害能力喔！💖";
-    } else if (bestSenses.length === 1) {
-      summaryLine = `🎉 今天 <span class="kid-name">${kidName}</span> 表現最好的是 <span class="best-sense">${bestLabel}</span>（${maxScore} 分）！<br/>`;
-      bestDesc = SENSE_DESC[bestSenses[0]] || "太棒了！你今天表現超亮眼！🌟";
-    } else {
-      summaryLine = `🎉 今天 <span class="kid-name">${kidName}</span> 最強的是 <span class="best-sense">${bestLabel}</span>（都 ${maxScore} 分）！<br/>`;
-      bestDesc = "你不只一項能力並列最強，根本是全能小高手！🌟";
+    /* === 最強 === */
+    const summaryEl = document.getElementById("senseSummary");
+    if (summaryEl) {
+      if (maxScore === 0) {
+        summaryEl.innerHTML =
+          "🌈 今天還沒開始計分～快去玩遊戲拿糖果吧！🍬✨";
+      } else {
+        summaryEl.innerHTML = `
+          🎉 今天 <span class="kid-name">${kidName}</span> 表現最好的是
+          <span class="best-sense">${best.join("、")}</span>（${maxScore} 分）！<br/>
+          <span class="best-desc">${BEST_DESC[best[0]] || ""}</span>
+        `;
+      }
     }
 
-    const textEl = document.getElementById("senseScoresText");
-    if (textEl) {
-      textEl.innerHTML = `
-        <div class="sense-summary">
-          ${summaryLine}
-          <span class="best-desc">${bestDesc}</span>
-        </div>
+    /* === 分數列表 === */
+    const listEl = document.getElementById("senseScoresText");
+    if (listEl) {
+      listEl.innerHTML = `
         <div class="sense-list">
-          ${SENSES.map((s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`).join("")}
+          ${SENSES.map(
+            (s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`
+          ).join("")}
         </div>
       `;
     }
 
-    // ✅ 圖表
+    /* === 最弱 + 建議 === */
+    const weakEl = document.getElementById("senseWeakAdvice");
+    if (weakEl) {
+      if (maxScore === 0) {
+        weakEl.innerHTML =
+          "💡 填完每一關的糖果數，就能看到專屬的訓練建議喔！";
+      } else {
+        const GAME_NAME = {
+          game1: "🥁 小丑打鼓台",
+          game2: "🏀 樂園神射手",
+          game3: "💡 螢火蟲冒險",
+          game4: "🏐 小丑躲避球",
+        };
+
+        const PRACTICE = {
+          視覺: ["拼圖、找不同", "描線、塗色", "丟接球盯住目標"],
+          聽覺: ["跟節拍拍手", "聽指令做動作", "音樂停走遊戲"],
+          前庭覺: ["單腳站", "走直線", "轉圈後走路"],
+          本體覺: ["深蹲、青蛙跳", "推牆", "控制力道丟球"],
+        };
+
+        const trainGames = weak
+          .map((s) => {
+            const games = Object.keys(GAME_SENSES)
+              .filter((g) => GAME_SENSES[g].includes(s))
+              .map((g) => GAME_NAME[g])
+              .join("、");
+            return `・${s}：多玩 ${games}`;
+          })
+          .join("<br/>");
+
+        const trainOther = weak
+          .map((s) => `・${s}：${PRACTICE[s].join("、")}`)
+          .join("<br/>");
+
+        weakEl.innerHTML = `
+          🌱 今天比較需要加強的是
+          <span class="best-sense">${weak.join("、")}</span>（${minScore} 分）<br/>
+          <span class="best-desc">每天練一點點就會進步！💖</span>
+          <div style="margin-top:10px">
+            <b>✅ 建議遊戲：</b><br/>${trainGames}
+          </div>
+          <div style="margin-top:10px">
+            <b>✨ 其他練習：</b><br/>${trainOther}
+          </div>
+        `;
+      }
+    }
+
+    /* === Chart.js === */
     const canvas = document.getElementById("senseChart");
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (senseChart) senseChart.destroy();
-
-    if (typeof Chart === "undefined") {
-      console.error("Chart.js 未載入：請確認 index.html 有先引入 chart.umd.min.js");
-      return;
-    }
 
     senseChart = new Chart(ctx, {
       type: "bar",
@@ -220,40 +233,28 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             label: "分數 (0-100)",
             data: SENSES.map((s) => senseScore[s]),
-            borderWidth: 1,
           },
         ],
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false, // ✅ 讓 chart 不會被壓扁（搭配 CSS / chart-wrap）
-        scales: {
-          y: { beginAtZero: true, max: 100 },
-        },
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, max: 100 } },
       },
     });
   }
 
   function openModal() {
-    if (!modal) return;
     modal.classList.remove("hidden");
     renderSenseChart();
   }
-
   function closeModal() {
-    if (!modal) return;
     modal.classList.add("hidden");
   }
 
-  if (btnResult) btnResult.addEventListener("click", openModal);
-  if (btnCloseModal) btnCloseModal.addEventListener("click", closeModal);
-
-  // 點黑色背景也關閉
-  if (modal) {
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal();
-    });
-  }
+  btnResult.addEventListener("click", openModal);
+  btnCloseModal.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => e.target === modal && closeModal());
 
   updateScoreCard();
 });
