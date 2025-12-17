@@ -1,5 +1,5 @@
 // 感覺統合樂園 – 純 JS 版本（糖果計分 + 結果分析圖表）
-// ✅ 最強/最弱左右兩區塊版（可直接覆蓋 script.js）
+// ✅ 最強/最弱左右兩區塊 + 分數列表在圖表下方（可直接覆蓋 script.js）
 
 document.addEventListener("DOMContentLoaded", () => {
   const nameInput = document.getElementById("name-input");
@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const kidName = (nameInput?.value || "").trim() || "小朋友";
 
-    // 先算最強/最弱
     const maxScore = Math.max(...SENSES.map((s) => senseScore[s]));
     const minScore = Math.min(...SENSES.map((s) => senseScore[s]));
 
@@ -208,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const bestLabel = bestSenses.join("、");
     const weakLabel = weakSenses.join("、");
 
-    // ✅ 左右兩區塊 + 分數列表
+    // ✅ 圖表下方：左右兩區塊 + 分數列表（放在最下面）
     const textEl = document.getElementById("senseScoresText");
     if (textEl) {
       // 左：最強
@@ -245,12 +244,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="panel-sub">成果分析就會給你最需要加強的能力喔！💖</div>
         `;
       } else {
-        // 推薦遊戲（弱項覺 -> 對應遊戲）
         const recGames = Array.from(new Set(weakSenses.flatMap((s) => senseToGames[s] || [])))
           .map((g) => GAME_NAME[g])
           .join("、");
 
-        // 其他練習
         const recExtra = Array.from(new Set(weakSenses.flatMap((s) => EXTRA_TRAIN[s] || [])))
           .slice(0, 4)
           .map((t) => `・${t}`)
@@ -276,15 +273,19 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       }
 
+      // ✅ 分數列表：放在圖表下方，但在兩區塊「下面」
+      const scoreListHtml = `
+        <div class="sense-list">
+          ${SENSES.map((s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`).join("")}
+        </div>
+      `;
+
       textEl.innerHTML = `
         <div class="sense-panels">
           <div class="sense-panel best-panel">${bestHtml}</div>
           <div class="sense-panel weak-panel">${weakHtml}</div>
         </div>
-
-        <div class="sense-list">
-          ${SENSES.map((s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`).join("")}
-        </div>
+        ${scoreListHtml}
       `;
     }
 
@@ -314,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false, // ✅ 讓 chart 不會被壓扁（搭配 CSS / chart-wrap）
+        maintainAspectRatio: false,
         scales: {
           y: { beginAtZero: true, max: 100 },
         },
