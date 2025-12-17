@@ -1,5 +1,5 @@
 // 感覺統合樂園 – 純 JS 版本（糖果計分 + 結果分析圖表）
-// ✅ 最強/最弱左右兩區塊 + 分數列表在圖表下方（可直接覆蓋 script.js）
+// ✅ 分數列表在圖表下方、且在左右兩區塊上面（可直接覆蓋 script.js）
 
 document.addEventListener("DOMContentLoaded", () => {
   const nameInput = document.getElementById("name-input");
@@ -91,10 +91,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (nameInput) nameInput.addEventListener("input", updateScoreCard);
 
-  if (scoreInputs.game1) scoreInputs.game1.addEventListener("input", (e) => setScore("game1", e.target.value));
-  if (scoreInputs.game2) scoreInputs.game2.addEventListener("input", (e) => setScore("game2", e.target.value));
-  if (scoreInputs.game3) scoreInputs.game3.addEventListener("input", (e) => setScore("game3", e.target.value));
-  if (scoreInputs.game4) scoreInputs.game4.addEventListener("input", (e) => setScore("game4", e.target.value));
+  if (scoreInputs.game1)
+    scoreInputs.game1.addEventListener("input", (e) => setScore("game1", e.target.value));
+  if (scoreInputs.game2)
+    scoreInputs.game2.addEventListener("input", (e) => setScore("game2", e.target.value));
+  if (scoreInputs.game3)
+    scoreInputs.game3.addEventListener("input", (e) => setScore("game3", e.target.value));
+  if (scoreInputs.game4)
+    scoreInputs.game4.addEventListener("input", (e) => setScore("game4", e.target.value));
 
   if (btnReset) {
     btnReset.addEventListener("click", () => {
@@ -117,12 +121,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================================
   const SENSES = ["視覺", "聽覺", "前庭覺", "本體覺"];
 
-  // 四個遊戲對應到的覺
   const GAME_SENSES = {
-    game1: ["視覺", "聽覺", "本體覺"],      // 小丑打鼓台
-    game2: ["視覺", "前庭覺", "本體覺"],    // 樂園神射手
-    game3: ["視覺", "前庭覺"],              // 螢火蟲冒險
-    game4: ["視覺", "前庭覺", "本體覺"],    // 小丑躲避球
+    game1: ["視覺", "聽覺", "本體覺"], // 小丑打鼓台
+    game2: ["視覺", "前庭覺", "本體覺"], // 樂園神射手
+    game3: ["視覺", "前庭覺"], // 螢火蟲冒險
+    game4: ["視覺", "前庭覺", "本體覺"], // 小丑躲避球
   };
 
   const GAME_NAME = {
@@ -146,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     本體覺: ["深蹲／熊爬", "推牆／搬輕物", "丟沙包／拉彈力帶"],
   };
 
-  // 反推：每個覺 -> 對應遊戲
+  // sense -> games
   const senseToGames = (() => {
     const map = {};
     SENSES.forEach((s) => (map[s] = []));
@@ -169,11 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // maxCandy = (有訓練到該覺的遊戲數) * 3
     for (const sense of SENSES) {
-      const gamesCount = Object.keys(GAME_SENSES).filter((g) => GAME_SENSES[g].includes(sense)).length;
+      const gamesCount = Object.keys(GAME_SENSES).filter((g) =>
+        GAME_SENSES[g].includes(sense)
+      ).length;
       senseMaxCandy[sense] = gamesCount * 3;
     }
 
-    // 分配糖果到各覺（每個遊戲的糖果會加到它對應的所有覺）
+    // 分配糖果到各覺
     for (const gameKey of Object.keys(GAME_SENSES)) {
       const candy = scores[gameKey] || 0; // 0~3
       for (const sense of GAME_SENSES[gameKey]) {
@@ -195,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderSenseChart() {
     const { senseScore } = computeSenseScores();
-
     const kidName = (nameInput?.value || "").trim() || "小朋友";
 
     const maxScore = Math.max(...SENSES.map((s) => senseScore[s]));
@@ -207,9 +211,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const bestLabel = bestSenses.join("、");
     const weakLabel = weakSenses.join("、");
 
-    // ✅ 圖表下方：左右兩區塊 + 分數列表（放在最下面）
+    // ✅ 文字區：先「分數列表」再「左右兩區塊」
     const textEl = document.getElementById("senseScoresText");
     if (textEl) {
+      // 分數列表（要在上面）
+      const scoreListHtml = `
+        <div class="sense-list">
+          ${SENSES.map((s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`).join("")}
+        </div>
+      `;
+
       // 左：最強
       let bestHtml = "";
       if (maxScore === 0) {
@@ -244,11 +255,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="panel-sub">成果分析就會給你最需要加強的能力喔！💖</div>
         `;
       } else {
-        const recGames = Array.from(new Set(weakSenses.flatMap((s) => senseToGames[s] || [])))
+        const recGames = Array.from(
+          new Set(weakSenses.flatMap((s) => senseToGames[s] || []))
+        )
           .map((g) => GAME_NAME[g])
           .join("、");
 
-        const recExtra = Array.from(new Set(weakSenses.flatMap((s) => EXTRA_TRAIN[s] || [])))
+        const recExtra = Array.from(
+          new Set(weakSenses.flatMap((s) => EXTRA_TRAIN[s] || []))
+        )
           .slice(0, 4)
           .map((t) => `・${t}`)
           .join("<br/>");
@@ -273,19 +288,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       }
 
-      // ✅ 分數列表：放在圖表下方，但在兩區塊「下面」
-      const scoreListHtml = `
-        <div class="sense-list">
-          ${SENSES.map((s) => `<div>・${s}：<b>${senseScore[s]}</b> 分</div>`).join("")}
-        </div>
-      `;
-
       textEl.innerHTML = `
+        ${scoreListHtml}
         <div class="sense-panels">
           <div class="sense-panel best-panel">${bestHtml}</div>
           <div class="sense-panel weak-panel">${weakHtml}</div>
         </div>
-        ${scoreListHtml}
       `;
     }
 
