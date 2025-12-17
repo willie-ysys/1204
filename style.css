@@ -25,18 +25,18 @@ body {
   align-items: stretch;
   justify-content: center;
 
-  /* ⭐ 新背景 */
   background-image: url("photo/background3.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
   background-color: #fff;
 
-  /* 背景固定（有視差感） */
   background-attachment: fixed;
 }
 
-.page-overlay { display: none; }
+.page-overlay {
+  display: none;
+}
 
 .page-content {
   position: relative;
@@ -59,7 +59,6 @@ body {
   text-align: center;
   margin: 12px 0 28px;
 
-  /* ⭐ 雙層陰影：白色浮出 + 粉色維持風格 */
   text-shadow:
     0 2px 6px rgba(255, 255, 255, 0.9),
     0 6px 16px rgba(226, 110, 162, 0.45);
@@ -82,7 +81,9 @@ body {
   border-color: #f3a7c5;
 }
 
-.card-inner { padding: 18px 22px; }
+.card-inner {
+  padding: 18px 22px;
+}
 
 /* =========================
    姓名卡
@@ -226,7 +227,7 @@ body {
 }
 
 /* =========================
-   糖果顯示樣式（整理版，不重複）
+   糖果顯示樣式（整理版）
 ========================= */
 .candy-icon {
   width: 22px;
@@ -234,12 +235,10 @@ body {
   vertical-align: middle;
 }
 
-/* label 的糖果 icon 右邊留距離 */
 .game-score-label .candy-icon {
   margin-right: 4px;
 }
 
-/* 成績單內 icon 與總糖果 icon 的間距 */
 .score-game-value .candy-icon,
 #display-total-score .candy-icon {
   margin: 0 2px;
@@ -310,7 +309,6 @@ body {
   padding-top: 10px;
 }
 
-/* 總分置中 */
 .score-total {
   margin: 0;
   display: flex;
@@ -389,7 +387,7 @@ body {
 /* =========================
    結果分析（modal + chart）
 ========================= */
-.hidden{ display:none !important; }
+.hidden { display: none !important; }
 
 .modal{
   position: fixed;
@@ -403,7 +401,9 @@ body {
 }
 
 .modal-content{
-  width: min(900px, 92vw);
+  width: min(980px, 92vw);
+  max-height: 88vh;        /* ⭐ 防止整頁被撐爆 */
+  overflow: auto;          /* ⭐ 超出就滾動 */
   background: rgba(255,255,255,0.92);
   border-radius: 18px;
   padding: 16px 16px 14px;
@@ -433,13 +433,12 @@ body {
   font-size: 16px;
 }
 
-/* ✅ 固定圖表區高度（不會因分數低而被壓扁） */
+/* ✅ 固定圖表區高度 */
 .chart-wrap{
   width: 100%;
-  height: 260px;   /* ⭐ 想更大可改 300px */
+  height: 260px;
 }
 
-/* ✅ Canvas 撐滿 chart-wrap + 保留美觀背景 */
 #senseChart{
   width: 100% !important;
   height: 100% !important;
@@ -456,7 +455,12 @@ body {
   color: #444;
 }
 
-/* 上方總結句 */
+/* 如果 index 還留著 #senseSummary 但沒內容，避免出現空白粉框 */
+#senseSummary:empty { display: none !important; }
+
+/* =========================
+   分數文字的基礎樣式
+========================= */
 .sense-summary{
   margin-top: 10px;
   padding: 12px 14px;
@@ -495,7 +499,10 @@ body {
   line-height: 1.8;
   font-size: 15px;
 }
-/* ✅ 兩個區塊左右並排（小螢幕自動上下） */
+
+/* =========================
+   ✅ 兩個區塊左右並排（最好 / 最弱）
+========================= */
 .sense-panels{
   display: grid;
   grid-template-columns: 1fr 1fr;
