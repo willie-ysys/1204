@@ -280,11 +280,18 @@
                 <span>📈</span>
               </h2>
             </div>
-
             <div class="score-body">
               <p class="name-tip">
                 會顯示「你這個姓名」每次按下「紀錄今天成績」後的累積結果。
               </p>
+
+              <!-- ✅ 新增：累積糖果統計（對應 script.js 的 totalCandyStat） -->
+              <div
+                id="totalCandyStat"
+                style="text-align:center; font-weight:800; margin: 8px 0 12px 0;"
+              >
+                🍬 累積糖果：0 顆
+              </div>
 
               <div class="chart-wrap" style="max-width: 920px; margin: 0 auto;">
                 <canvas id="trendChart"></canvas>
@@ -292,6 +299,7 @@
 
               <div id="historyTable" class="scores-text" style="margin-top: 10px;"></div>
             </div>
+
           </div>
         </div>
 

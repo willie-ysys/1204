@@ -75,6 +75,9 @@ const authStatus = document.getElementById("auth-status");
 const trendCanvas = document.getElementById("trendChart");
 const historyTable = document.getElementById("historyTable");
 
+// ✅ 新增：累積糖果顯示區
+const totalCandyStatEl = document.getElementById("totalCandyStat");
+
 /***********************
  * 2) 全域狀態：唯一姓名來源
  ***********************/
@@ -142,6 +145,22 @@ function getScores() {
 
 function sumCandy(scores) {
   return scores.game1 + scores.game2 + scores.game3 + scores.game4;
+}
+
+/***********************
+ * ✅ 新增：計算此帳號累積總糖果
+ * - 直接從 Firestore 讀回來的 history 裡面累加 totalCandy
+ ***********************/
+function calcTotalCandyFromHistory(history) {
+  return (history || []).reduce((sum, r) => {
+    const n = typeof r.totalCandy === "number" ? r.totalCandy : 0;
+    return sum + n;
+  }, 0);
+}
+
+function renderTotalCandyStat(totalCandy) {
+  if (!totalCandyStatEl) return;
+  totalCandyStatEl.textContent = `🍬 累積糖果：${totalCandy} 顆`;
 }
 
 /***********************
@@ -326,6 +345,7 @@ auth.onAuthStateChanged(async (user) => {
       await loadAndRenderHistory();
     } else if (historyTable) {
       historyTable.innerHTML = `<p style="text-align:center;">請先在上方輸入小朋友姓名，再顯示歷史紀錄與趨勢圖。</p>`;
+      renderTotalCandyStat(0);
       if (trendChartInstance) {
         trendChartInstance.destroy();
         trendChartInstance = null;
@@ -334,6 +354,7 @@ auth.onAuthStateChanged(async (user) => {
   } else {
     if (btnLogout) btnLogout.style.display = "none";
     if (historyTable) historyTable.innerHTML = `<p style="text-align:center;">尚未登入（系統會在你輸入姓名後自動登入）。</p>`;
+    renderTotalCandyStat(0);
     if (trendChartInstance) {
       trendChartInstance.destroy();
       trendChartInstance = null;
@@ -342,7 +363,7 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 /***********************
- * 8) Firestore：以姓名為主（✅改成「同一天可多筆」）
+ * 8) Firestore：以姓名為主（✅同一天可多筆）
  * kids/{kidName}
  *   - records/{autoId}: { createdAt, date, kidName, totalCandy, scores }
  ***********************/
@@ -371,16 +392,14 @@ async function saveTodayRecord() {
     { merge: true }
   );
 
-  // ✅ 關鍵：不要再用 doc(date) 覆蓋，而是每次新增一筆
-  await kidDocRef(kidName)
-    .collection("records")
-    .add({
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(), // 排序用
-      date: dateStr, // 顯示/分組用（但不是 key）
-      kidName,
-      totalCandy,
-      scores: scores100, // 0~100
-    });
+  // ✅ 關鍵：每次新增一筆
+  await kidDocRef(kidName).collection("records").add({
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    date: dateStr,
+    kidName,
+    totalCandy,
+    scores: scores100,
+  });
 
   alert("✅ 已新增一筆成績（同一天可紀錄多次）！");
   await loadAndRenderHistory();
@@ -391,11 +410,7 @@ async function loadHistory() {
   await ensureAnonLogin();
 
   const kidName = getKidName();
-  const snap = await kidDocRef(kidName)
-    .collection("records")
-    .orderBy("createdAt", "asc")
-    .get();
-
+  const snap = await kidDocRef(kidName).collection("records").orderBy("createdAt", "asc").get();
   return snap.docs.map((d) => ({ docId: d.id, ...d.data() }));
 }
 
@@ -417,6 +432,7 @@ async function loadAndRenderHistory() {
 
   if (!history.length) {
     historyTable.innerHTML = `<p style="text-align:center;">尚無紀錄。去按「📌 紀錄今天成績」就會出現趨勢圖！</p>`;
+    renderTotalCandyStat(0);
     if (trendChartInstance) {
       trendChartInstance.destroy();
       trendChartInstance = null;
@@ -424,10 +440,13 @@ async function loadAndRenderHistory() {
     return;
   }
 
-  // ✅ labels 改成「日期 + 時間」，同一天多筆才看得懂
+  // ✅ 新增：更新「累積糖果」統計
+  const totalCandyAll = calcTotalCandyFromHistory(history);
+  renderTotalCandyStat(totalCandyAll);
+
+  // ✅ labels 改成「日期 + 時間」
   const labels = history.map((r) => {
     const dt = formatDateTime(r.createdAt);
-    // 若 createdAt 還沒回來（極少數剛寫入立刻讀），用 date 補一下
     return dt !== "—" ? dt : (r.date || "—");
   });
 
@@ -521,6 +540,7 @@ function wireEvents() {
       setKidName(v);
       renderScoreCard();
       if (v) loadAndRenderHistory();
+      else renderTotalCandyStat(0);
     });
   }
 
@@ -541,6 +561,7 @@ function wireEvents() {
       renderScoreCard();
       closeModal();
       resetAnalysisBoxes();
+      renderTotalCandyStat(0);
 
       if (historyTable) {
         historyTable.innerHTML = `<p style="text-align:center;">請先在上方輸入小朋友姓名，再顯示歷史紀錄與趨勢圖。</p>`;
@@ -599,6 +620,7 @@ function wireEvents() {
 
       alert("已切換姓名（可輸入新的小朋友姓名）");
       resetAnalysisBoxes();
+      renderTotalCandyStat(0);
 
       if (historyTable) {
         historyTable.innerHTML = `<p style="text-align:center;">請先在上方輸入小朋友姓名，再顯示歷史紀錄與趨勢圖。</p>`;
@@ -615,5 +637,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setKidName("");
   renderScoreCard();
   resetAnalysisBoxes();
+  renderTotalCandyStat(0);
   wireEvents();
 });
